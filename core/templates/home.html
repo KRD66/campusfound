@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% block title %}CampusFound | Lost & Found for Students{% endblock %}
+
+{% block content %}
+
+    <!-- Hero / Search section -->
+    <header class="bg-white py-16 border-b border-gray-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h1 class="text-4xl sm:text-5xl font-extrabold text-gray-900 leading-tight">
+                Lost something?<br>We’ll help you find it.
+            </h1>
+            <p class="mt-5 text-xl text-gray-600 max-w-3xl mx-auto">
+                The central hub for lost and found items at your university.
+            </p>
+
+            <div class="mt-10 max-w-2xl mx-auto relative">
+                <input type="text"
+                       placeholder="Search for keys, IDs, laptops, earbuds..."
+                       class="w-full pl-12 pr-5 py-4 rounded-2xl border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none shadow-sm text-lg">
+                <i class="fa-solid fa-search absolute left-5 top-1/2 -translate-y-1/2 text-gray-400 text-xl"></i>
+            </div>
+        </div>
+    </header>
+
+    <!-- Recent Listings section (placeholder for now) -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div class="flex flex-col sm:flex-row sm:items-end justify-between mb-10">
+            <div>
+                <h2 class="text-2xl sm:text-3xl font-bold text-gray-900">Recent Listings</h2>
+                <div class="flex flex-wrap gap-3 mt-3">
+                    <span class="px-4 py-1.5 bg-blue-600 text-white rounded-full text-sm font-medium">All Items</span>
+                    <span class="px-4 py-1.5 bg-white border border-gray-300 text-gray-700 rounded-full text-sm font-medium hover:bg-gray-50 transition">Lost</span>
+                    <span class="px-4 py-1.5 bg-white border border-gray-300 text-gray-700 rounded-full text-sm font-medium hover:bg-gray-50 transition">Found</span>
+                </div>
+            </div>
+            <select class="mt-4 sm:mt-0 border border-gray-300 rounded-lg px-4 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <option>Newest First</option>
+                <option>Oldest First</option>
+            </select>
+        </div>
+
+        <!-- Grid - placeholder cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <!-- You can add 4–8 static card examples here later -->
+            <div class="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition border border-gray-100">
+                <div class="h-48 bg-gray-100 relative">
+                    <span class="absolute top-3 left-3 bg-red-500 text-white text-xs font-bold px-3 py-1 rounded-full">LOST</span>
+                </div>
+                <div class="p-5">
+                    <h3 class="font-bold text-lg">Example Item Title</h3>
+                    <p class="text-sm text-gray-500 mt-1"><i class="fa-solid fa-location-dot mr-1"></i> Library – Floor 3</p>
+                    <div class="mt-4 flex justify-between items-center text-sm">
+                        <span class="text-gray-400">3 hours ago</span>
+                        <span class="text-blue-600 font-medium hover:underline cursor-pointer">View</span>
+                    </div>
+                </div>
+            </div>
+            <!-- repeat similar blocks ... -->
+        </div>
+    </section>
+
+{% endblock %}
