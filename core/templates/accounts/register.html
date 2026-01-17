@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}Login | CampusFound{% endblock %}
+{% block title %}Register | CampusFound{% endblock %}
 
 {% block content %}
 
@@ -11,12 +11,12 @@
                 <span class="text-3xl font-black text-blue-600">
                     <i class="fa-solid fa-magnifying-glass-location mr-2"></i>CampusFound
                 </span>
-                <p class="text-gray-400 mt-2">Login with your university credentials</p>
+                <p class="text-gray-400 mt-2">Create your account</p>
             </div>
 
             {% if messages %}
                 {% for message in messages %}
-                    <div class="{% if message.tags == 'success' %}bg-green-100 border-green-400 text-green-700{% else %}bg-red-100 border-red-400 text-red-700{% endif %} border px-4 py-3 rounded relative mb-6" role="alert">
+                    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-6" role="alert">
                         <span class="block sm:inline">{{ message }}</span>
                     </div>
                 {% endfor %}
@@ -26,13 +26,25 @@
                 {% csrf_token %}
 
                 <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-gray-400 mb-2">Full Name</label>
+                    <div class="relative">
+                        <input 
+                            type="text" 
+                            name="full_name" 
+                            placeholder="John Doe" 
+                            class="w-full bg-gray-50 border border-gray-100 rounded-xl py-4 pl-12 focus:ring-2 focus:ring-blue-500 outline-none transition"
+                        >
+                        <i class="fa-solid fa-user absolute left-4 top-4.5 text-gray-300"></i>
+                    </div>
+                </div>
+
+                <div>
                     <label class="block text-xs font-bold uppercase tracking-wider text-gray-400 mb-2">School Email</label>
                     <div class="relative">
                         <input 
                             type="email" 
-                            name="username" 
+                            name="email" 
                             required 
-                            autofocus 
                             placeholder="student@university.edu" 
                             class="w-full bg-gray-50 border border-gray-100 rounded-xl py-4 pl-12 focus:ring-2 focus:ring-blue-500 outline-none transition"
                         >
@@ -45,7 +57,22 @@
                     <div class="relative">
                         <input 
                             type="password" 
-                            name="password" 
+                            name="password1" 
+                            required 
+                            placeholder="••••••••" 
+                            class="w-full bg-gray-50 border border-gray-100 rounded-xl py-4 pl-12 focus:ring-2 focus:ring-blue-500 outline-none transition"
+                        >
+                        <i class="fa-solid fa-lock absolute left-4 top-4.5 text-gray-300"></i>
+                    </div>
+                    <p class="text-xs text-gray-400 mt-1">At least 8 characters</p>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-gray-400 mb-2">Confirm Password</label>
+                    <div class="relative">
+                        <input 
+                            type="password" 
+                            name="password2" 
                             required 
                             placeholder="••••••••" 
                             class="w-full bg-gray-50 border border-gray-100 rounded-xl py-4 pl-12 focus:ring-2 focus:ring-blue-500 outline-none transition"
@@ -55,14 +82,14 @@
                 </div>
 
                 <button type="submit" class="w-full bg-blue-600 text-white py-4 rounded-xl font-bold text-lg hover:bg-blue-700 transition shadow-lg shadow-blue-200">
-                    Sign In
+                    Create Account
                 </button>
             </form>
 
             <div class="mt-8 text-center">
                 <p class="text-gray-500 text-sm">
-                    Don't have an account? 
-                    <a href="{% url 'register' %}" class="text-blue-600 font-bold hover:underline">Create an account</a>
+                    Already have an account? 
+                    <a href="{% url 'login' %}" class="text-blue-600 font-bold hover:underline">Sign in</a>
                 </p>
             </div>
         </div>
