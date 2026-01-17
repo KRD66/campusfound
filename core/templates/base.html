@@ -5,13 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}CampusFound{% endblock %}</title>
 
-    <!-- Tailwind via CDN -->
+    <!-- Tailwind CSS via CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
 
-    <!-- Font Awesome -->
+    <!-- Font Awesome 6 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
-    <!-- Inter font -->
+    <!-- Google Fonts: Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 
     <style>
@@ -25,7 +25,7 @@
 
 <body class="bg-gray-50 text-gray-900 min-h-screen flex flex-col">
 
-    <!-- Navigation -->
+    <!-- Navigation Bar -->
     <nav class="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
@@ -36,13 +36,17 @@
                 </a>
 
                 <!-- Right side menu -->
-                <div class="flex items-center gap-6">
+                <div class="flex items-center gap-4 sm:gap-6">
+                    <a href="{% url 'items:home' %}" class="text-gray-700 hover:text-blue-600 font-medium transition hidden sm:block">
+                        Browse
+                    </a>
+
+                    <a href="{% url 'items:post_item' %}" class="bg-green-600 text-white px-5 py-2.5 rounded-full font-semibold hover:bg-green-700 transition shadow-sm text-sm sm:text-base">
+                        Post an Item
+                    </a>
+
                     {% if user.is_authenticated %}
                         <!-- Logged in -->
-                        <a href="{% url 'items:home' %}" class="text-gray-700 hover:text-blue-600 font-medium transition">
-                            Browse
-                        </a>
-
                         <a href="#" class="text-gray-600 hover:text-blue-600 relative">
                             <i class="fa-solid fa-bell text-xl"></i>
                             <!-- <span class="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full border-2 border-white"></span> -->
@@ -52,21 +56,13 @@
                             {{ user.email|slice:":2"|upper }}
                         </div>
 
-                        <a href="{% url 'logout' %}" class="text-gray-600 hover:text-red-600 font-medium transition">
+                        <a href="{% url 'logout' %}" class="text-gray-600 hover:text-red-600 font-medium transition text-sm sm:text-base">
                             Logout
                         </a>
                     {% else %}
                         <!-- Not logged in -->
-                        <a href="{% url 'items:home' %}" class="text-gray-700 hover:text-blue-600 font-medium transition">
-                            Browse
-                        </a>
-
-                        <a href="{% url 'login' %}" class="bg-blue-600 text-white px-5 py-2.5 rounded-full font-semibold hover:bg-blue-700 transition shadow-sm">
+                        <a href="{% url 'login' %}" class="bg-blue-600 text-white px-5 py-2.5 rounded-full font-semibold hover:bg-blue-700 transition shadow-sm text-sm sm:text-base">
                             Sign In
-                        </a>
-
-                        <a href="{% url 'items:post_item' %}" class="bg-green-600 text-white px-6 py-2.5 rounded-full font-semibold hover:bg-green-700 transition shadow-sm">
-                            Post an Item
                         </a>
                     {% endif %}
                 </div>
@@ -74,7 +70,7 @@
         </div>
     </nav>
 
-    <!-- Main content -->
+    <!-- Main content area -->
     <main class="flex-grow">
         {% block content %}
         {% endblock %}

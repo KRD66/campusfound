@@ -1,3 +1,78 @@
 from django.db import models
+from django.contrib.auth import get_user_model
+from django.utils import timezone
 
-# Create your models here.
+User = get_user_model()
+
+
+class Item(models.Model):
+    TYPE_CHOICES = (
+        ('found', 'Found'),
+        ('lost', 'Lost'),
+    )
+
+    CATEGORY_CHOICES = (
+        ('Electronics', 'Electronics'),
+        ('Keys', 'Keys'),
+        ('Books', 'Books'),
+        ('Clothing', 'Clothing'),
+        ('ID/Cards', 'ID/Cards'),
+        ('Bags', 'Bags'),
+        ('Other', 'Other'),
+    )
+
+    CONTACT_PREFERENCE_CHOICES = (
+        ('email', 'Email'),
+        ('phone', 'Phone'),
+        ('chat', 'In-App Chat'),
+    )
+
+    # Common fields
+    poster = models.ForeignKey(User, on_delete=models.CASCADE, related_name='items')
+    item_type = models.CharField(max_length=10, choices=TYPE_CHOICES)
+    title = models.CharField(max_length=200)
+    category = models.CharField(
+        max_length=50,
+        choices=CATEGORY_CHOICES,
+        blank=True,
+        null=True,
+        help_text="Select a category"
+    )
+    location = models.CharField(
+        max_length=200,
+        blank=True,
+        help_text="Type the location (e.g. Main Library, Science Cafe, Student Union...)"
+    )
+    photo = models.ImageField(upload_to='items/%Y/%m/%d/', blank=True, null=True)
+    description = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    # Fields specific to LOST items
+    date_lost = models.DateField(
+        blank=True,
+        null=True,
+        help_text="When did you lose this item?"
+    )
+    reward_offered = models.CharField(
+        max_length=200,
+        blank=True,
+        help_text="Optional: e.g. '$20 reward' or 'Coffee on me!'"
+    )
+    contact_preference = models.CharField(
+        max_length=20,
+        choices=CONTACT_PREFERENCE_CHOICES,
+        default='chat',
+        blank=True
+    )
+
+    # Fields specific to FOUND items
+    verification_question = models.TextField(
+        blank=True,
+        help_text="Ask a question only the owner would know"
+    )
+
+    def __str__(self):
+        return f"{self.item_type.title()}: {self.title}"
+
+    class Meta:
+        ordering = ['-created_at']  # newest first
