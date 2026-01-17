@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}CampusFound{% endblock %}</title>
 
-    <!-- Tailwind CSS via CDN -->
+    <!-- Tailwind via CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
 
-    <!-- Font Awesome 6 -->
+    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
     <!-- Inter font -->
@@ -25,7 +25,7 @@
 
 <body class="bg-gray-50 text-gray-900 min-h-screen flex flex-col">
 
-    <!-- Navigation Bar -->
+    <!-- Navigation -->
     <nav class="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
@@ -38,18 +38,13 @@
                 <!-- Right side menu -->
                 <div class="flex items-center gap-6">
                     {% if user.is_authenticated %}
-                        <!-- Authenticated user -->
+                        <!-- Logged in -->
                         <a href="{% url 'items:home' %}" class="text-gray-700 hover:text-blue-600 font-medium transition">
                             Browse
                         </a>
 
-                        <a href="{% url 'items:dashboard' %}" class="text-gray-700 hover:text-blue-600 font-medium transition">
-                            Dashboard
-                        </a>
-
                         <a href="#" class="text-gray-600 hover:text-blue-600 relative">
                             <i class="fa-solid fa-bell text-xl"></i>
-                            <!-- Optional notification badge -->
                             <!-- <span class="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full border-2 border-white"></span> -->
                         </a>
 
@@ -61,7 +56,7 @@
                             Logout
                         </a>
                     {% else %}
-                        <!-- Guest / not logged in -->
+                        <!-- Not logged in -->
                         <a href="{% url 'items:home' %}" class="text-gray-700 hover:text-blue-600 font-medium transition">
                             Browse
                         </a>
@@ -79,7 +74,7 @@
         </div>
     </nav>
 
-    <!-- Main content area -->
+    <!-- Main content -->
     <main class="flex-grow">
         {% block content %}
         {% endblock %}
