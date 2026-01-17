@@ -5,9 +5,8 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-
-
-    path('', include('items.urls')),   # homepage from items app
+    path('accounts/', include('accounts.urls')),
+    path('', include('items.urls')),
 ]
 
 if settings.DEBUG:
