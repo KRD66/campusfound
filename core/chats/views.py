@@ -25,7 +25,7 @@ def inbox(request):
         'unread_count': unread_count,
     }
     
-    return render(request, 'messages/inbox.html', context)
+    return render(request, 'chats/inbox.html', context)
 
 
 @login_required
@@ -39,7 +39,7 @@ def conversation_detail(request, conversation_id):
     # Check if user is part of this conversation
     if request.user not in [conversation.sender, conversation.receiver]:
         django_messages.error(request, "You don't have access to this conversation")
-        return redirect('messages:inbox')
+        return redirect('chats:inbox')
     
     # Mark messages as read
     Message.objects.filter(
@@ -56,7 +56,7 @@ def conversation_detail(request, conversation_id):
                 sender=request.user,
                 content=content
             )
-            return redirect('messages:conversation_detail', conversation_id=conversation.id)
+            return redirect('chats:conversation_detail', conversation_id=conversation.id)
     
     # Get all messages in this conversation
     messages_list = conversation.messages.all().order_by('created_at')
@@ -73,7 +73,7 @@ def conversation_detail(request, conversation_id):
         'other_user': conversation.get_other_user(request.user),
     }
     
-    return render(request, 'messages/conversation_detail.html', context)
+    return render(request, 'chats/conversation_detail.html', context)
 
 
 @login_required
@@ -109,4 +109,4 @@ def start_conversation(request, item_id):
             receiver=item.poster
         )
     
-    return redirect('messages:conversation_detail', conversation_id=conversation.id)
+    return redirect('chats:conversation_detail', conversation_id=conversation.id)

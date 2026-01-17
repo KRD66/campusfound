@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+
+{% block title %}Messages | CampusFound{% endblock %}
+
+{% block content %}
+
+<div class="max-w-7xl mx-auto px-4 py-8">
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+        <div class="p-6 border-b border-gray-100">
+            <h2 class="text-2xl font-bold">Messages</h2>
+            {% if unread_count > 0 %}
+                <p class="text-sm text-gray-500 mt-1">You have {{ unread_count }} unread message{{ unread_count|pluralize }}</p>
+            {% endif %}
+        </div>
+
+        {% if conversations %}
+            <div class="divide-y divide-gray-100">
+                {% for conversation in conversations %}
+                    {% with other_user=conversation.get_other_user last_message=conversation.get_last_message %}
+                        <a href="{% url 'messages:conversation_detail' conversation.id %}" 
+                           class="block p-6 hover:bg-gray-50 transition {% if last_message and not last_message.is_read and last_message.sender != user %}bg-blue-50{% endif %}">
+                            <div class="flex items-start gap-4">
+                                <!-- User Avatar -->
+                                <div class="w-12 h-12 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold flex-shrink-0">
+                                    {{ other_user.email|slice:":2"|upper }}
+                                </div>
+
+                                <!-- Message Content -->
+                                <div class="flex-1 min-w-0">
+                                    <div class="flex items-start justify-between mb-1">
+                                        <h3 class="font-bold text-gray-900 truncate">
+                                            {{ other_user.full_name|default:other_user.email }}
+                                        </h3>
+                                        {% if last_message %}
+                                            <span class="text-xs text-gray-500 ml-2 flex-shrink-0">
+                                                {{ last_message.created_at|timesince }} ago
+                                            </span>
+                                        {% endif %}
+                                    </div>
+
+                                    <p class="text-sm text-gray-600 mb-2">
+                                        <i class="fa-solid fa-tag mr-1"></i>
+                                        Re: {{ conversation.item.title }}
+                                    </p>
+
+                                    {% if last_message %}
+                                        <p class="text-sm text-gray-500 truncate">
+                                            {% if last_message.sender == user %}
+                                                <span class="font-medium">You:</span>
+                                            {% endif %}
+                                            {{ last_message.content|truncatewords:10 }}
+                                        </p>
+                                    {% else %}
+                                        <p class="text-sm text-gray-400 italic">No messages yet</p>
+                                    {% endif %}
+                                </div>
+
+                                <!-- Unread indicator -->
+                                {% if last_message and not last_message.is_read and last_message.sender != user %}
+                                    <div class="w-3 h-3 bg-blue-600 rounded-full flex-shrink-0"></div>
+                                {% endif %}
+                            </div>
+                        </a>
+                    {% endwith %}
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="p-12 text-center">
+                <i class="fa-solid fa-inbox text-gray-300 text-6xl mb-4"></i>
+                <h3 class="text-lg font-semibold text-gray-600 mb-2">No messages yet</h3>
+                <p class="text-gray-500 mb-6">Start a conversation by contacting someone about their item</p>
+                <a href="{% url 'items:home' %}" class="inline-block bg-blue-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-blue-700 transition">
+                    Browse Items
+                </a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}
