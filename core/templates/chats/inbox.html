@@ -17,7 +17,7 @@
             <div class="divide-y divide-gray-100">
                 {% for conversation in conversations %}
                     {% with other_user=conversation.get_other_user last_message=conversation.get_last_message %}
-                        <a href="{% url 'messages:conversation_detail' conversation.id %}" 
+                        <a href="{% url 'chats:conversation_detail' conversation.id %}" 
                            class="block p-6 hover:bg-gray-50 transition {% if last_message and not last_message.is_read and last_message.sender != user %}bg-blue-50{% endif %}">
                             <div class="flex items-start gap-4">
                                 <!-- User Avatar -->

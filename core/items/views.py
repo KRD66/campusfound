@@ -69,6 +69,9 @@ def post_item(request):
 @login_required
 def dashboard(request):
     """User's personal dashboard showing their items"""
+    from chats.models import Conversation
+    from django.db.models import Q
+    
     filter_type = request.GET.get('filter', 'all')
     
     # Get user's items
@@ -81,7 +84,11 @@ def dashboard(request):
     # Calculate stats
     total_items = Item.objects.filter(poster=request.user).count()
     returned_items = Item.objects.filter(poster=request.user, status='returned').count()
-    active_chats = 0  # Placeholder for when you add messaging
+    
+    # Get active chats count
+    active_chats = Conversation.objects.filter(
+        Q(sender=request.user) | Q(receiver=request.user)
+    ).count()
     
     context = {
         'my_items': my_items,

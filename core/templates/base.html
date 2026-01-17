@@ -47,7 +47,7 @@
                         </a>
 
                         <!-- Messages/Notifications -->
-                        <a href="{% url 'messages:inbox' %}" class="text-gray-600 hover:text-blue-600 relative">
+                        <a href="{% url 'chats:inbox' %}" class="text-gray-600 hover:text-blue-600 relative">
                             <i class="fa-solid fa-envelope text-xl"></i>
                             {% if unread_messages_count > 0 %}
                                 <span class="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center font-bold">{{ unread_messages_count }}</span>
