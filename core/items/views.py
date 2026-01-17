@@ -59,8 +59,76 @@ def post_item(request):
             item = form.save(commit=False)
             item.poster = request.user
             item.save()
-            return redirect('items:home')  # or to dashboard later
+            return redirect('items:dashboard')
     else:
         form = ItemForm()
 
     return render(request, 'post_item.html', {'form': form})
+
+
+@login_required
+def dashboard(request):
+    """User's personal dashboard showing their items"""
+    filter_type = request.GET.get('filter', 'all')
+    
+    # Get user's items
+    my_items = Item.objects.filter(poster=request.user)
+    
+    # Apply filter
+    if filter_type in ['lost', 'found']:
+        my_items = my_items.filter(item_type=filter_type)
+    
+    # Calculate stats
+    total_items = Item.objects.filter(poster=request.user).count()
+    returned_items = Item.objects.filter(poster=request.user, status='returned').count()
+    active_chats = 0  # Placeholder for when you add messaging
+    
+    context = {
+        'my_items': my_items,
+        'total_items': total_items,
+        'returned_items': returned_items,
+        'active_chats': active_chats,
+        'current_filter': filter_type,
+    }
+    
+    return render(request, 'dashboard.html', context)
+
+
+@login_required
+def edit_item(request, item_id):
+    """Edit an existing item"""
+    item = get_object_or_404(Item, id=item_id, poster=request.user)
+    
+    if request.method == 'POST':
+        form = ItemForm(request.POST, request.FILES, instance=item)
+        if form.is_valid():
+            form.save()
+            return redirect('items:dashboard')
+    else:
+        form = ItemForm(instance=item)
+    
+    return render(request, 'post_item.html', {'form': form, 'edit_mode': True})
+
+
+@login_required
+def delete_item(request, item_id):
+    """Delete an item"""
+    item = get_object_or_404(Item, id=item_id, poster=request.user)
+    
+    if request.method == 'POST':
+        item.delete()
+        return redirect('items:dashboard')
+    
+    return redirect('items:dashboard')
+
+
+@login_required
+def mark_as_returned(request, item_id):
+    """Mark an item as returned"""
+    item = get_object_or_404(Item, id=item_id, poster=request.user)
+    
+    if request.method == 'POST':
+        item.status = 'returned'
+        item.save()
+    
+    return redirect('items:dashboard')
