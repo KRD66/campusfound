@@ -71,6 +71,19 @@ class Item(models.Model):
         help_text="Ask a question only the owner would know"
     )
 
+    # Status field
+    STATUS_CHOICES = (
+        ('active', 'Active'),
+        ('claimed', 'Claimed'),
+        ('returned', 'Returned'),
+    )
+    
+    status = models.CharField(
+        max_length=20,
+        choices=STATUS_CHOICES,
+        default='active'
+    )
+
     def __str__(self):
         return f"{self.item_type.title()}: {self.title}"
 
