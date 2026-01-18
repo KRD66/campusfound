@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-3^bwi*(ewl0ox8dsbvju52_l_!_y_+gw+2b-)@aefoa_#i@(v3
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['campusfound.onrender.com', 'localhost', '127.0.0.1']
 
 
 # Application definition
@@ -41,6 +41,8 @@ INSTALLED_APPS = [
     'items',
     'accounts',
     'chats',
+    'cloudinary_storage',
+    'cloudinary',
     
 ]
 
