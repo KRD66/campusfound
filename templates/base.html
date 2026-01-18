@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}CampusFound{% endblock %}</title>
+
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        }
+    </style>
+
+    {% block extra_head %}{% endblock %}
+</head>
+
+<body class="bg-gray-50 text-gray-900 min-h-screen flex flex-col">
+
+    <!-- Navigation Bar -->
+    <nav class="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo -->
+                <a href="{% url 'items:home' %}" class="text-2xl font-bold text-blue-600 flex items-center gap-2">
+                    <i class="fa-solid fa-magnifying-glass-location"></i>
+                    CampusFound
+                </a>
+
+                <!-- Right side menu -->
+                <div class="flex items-center gap-4 sm:gap-6">
+                    <a href="{% url 'items:home' %}" class="text-gray-700 hover:text-blue-600 font-medium transition hidden sm:block">
+                        Browse
+                    </a>
+
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'items:post_item' %}" class="bg-green-600 text-white px-5 py-2.5 rounded-full font-semibold hover:bg-green-700 transition shadow-sm text-sm sm:text-base">
+                            Post an Item
+                        </a>
+
+                        <!-- Messages/Notifications -->
+                        <a href="{% url 'chats:inbox' %}" class="text-gray-600 hover:text-blue-600 relative">
+                            <i class="fa-solid fa-envelope text-xl"></i>
+                            {% if unread_messages_count > 0 %}
+                                <span class="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center font-bold">{{ unread_messages_count }}</span>
+                            {% endif %}
+                        </a>
+
+                        <!-- User dropdown menu -->
+                        <div class="relative group">
+                            <button class="w-9 h-9 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold text-sm cursor-pointer">
+                                {{ user.email|slice:":2"|upper }}
+                            </button>
+                            
+                            <!-- Dropdown menu -->
+                            <div class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+                                <div class="py-1">
+                                    <a href="{% url 'items:dashboard' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+                                        <i class="fa-solid fa-table-columns mr-2"></i> My Dashboard
+                                    </a>
+                                    <a href="{% url 'items:post_item' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+                                        <i class="fa-solid fa-plus mr-2"></i> Post Item
+                                    </a>
+                                    <hr class="my-1">
+                                    <a href="{% url 'logout' %}" class="block px-4 py-2 text-sm text-red-600 hover:bg-red-50">
+                                        <i class="fa-solid fa-right-from-bracket mr-2"></i> Logout
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    {% else %}
+                        <!-- Not logged in -->
+                        <a href="{% url 'login' %}" class="bg-blue-600 text-white px-5 py-2.5 rounded-full font-semibold hover:bg-blue-700 transition shadow-sm text-sm sm:text-base">
+                            Sign In
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main content area -->
+    <main class="flex-grow">
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-gray-300 py-10 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p class="text-sm">
+                © {{ 'now'|date:"Y" }} CampusFound Platform.
+                <span class="text-gray-500 ml-2">Built for the student community.</span>
+            </p>
+            <p class="mt-3 text-xs text-gray-500">
+                Please be careful when meeting people to exchange items.
+            </p>
+        </div>
+    </footer>
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,227 @@
+{% extends 'base.html' %}
+
+{% block title %}Post New Listing | CampusFound{% endblock %}
+
+{% block content %}
+
+<div class="bg-gray-50 pb-12">
+
+    <nav class="bg-white p-4 border-b mb-8">
+        <div class="max-w-3xl mx-auto flex justify-between items-center">
+            <a href="{% url 'items:home' %}" class="text-blue-600 font-bold">
+                <i class="fa-solid fa-arrow-left mr-2"></i> Back to Home
+            </a>
+            <span class="font-semibold">Post New Listing</span>
+        </div>
+    </nav>
+
+    <main class="max-w-2xl mx-auto bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
+        <div class="p-8">
+            <h2 class="text-2xl font-bold mb-6">Item Details</h2>
+
+            {% if form.errors %}
+                <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl mb-6">
+                    <strong>Please fix the errors below:</strong>
+                    <ul class="list-disc pl-5 mt-2">
+                        {% for field in form %}
+                            {% for error in field.errors %}
+                                <li>{{ field.label }}: {{ error }}</li>
+                            {% endfor %}
+                        {% endfor %}
+                        {% for error in form.non_field_errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+
+            <form method="post" enctype="multipart/form-data" class="space-y-6">
+                {% csrf_token %}
+
+                <!-- Type toggle -->
+                <div class="flex bg-gray-100 p-1 rounded-xl">
+                    <button type="button" class="found-btn flex-1 py-2 bg-white rounded-lg shadow-sm font-bold text-blue-600">
+                        I Found Something
+                    </button>
+                    <button type="button" class="lost-btn flex-1 py-2 rounded-lg font-medium text-gray-500 hover:text-gray-700">
+                        I Lost Something
+                    </button>
+                    {{ form.item_type }}
+                </div>
+
+                <!-- Item Name -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        Item Name <span class="text-red-500">*</span>
+                    </label>
+                    {{ form.title }}
+                </div>
+
+                <!-- Category -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Category</label>
+                    {{ form.category }}
+                </div>
+
+                <!-- Campus Location -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        Campus Location <span class="text-red-500">*</span>
+                    </label>
+                    {{ form.location }}
+                </div>
+
+                <!-- FOUND ITEM FIELDS (shown only for found items) -->
+                <div id="found-fields" class="space-y-6">
+                    <!-- Photo -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Upload Photo</label>
+                        <div class="border-2 border-dashed border-gray-200 rounded-2xl p-8 text-center hover:border-blue-400 transition cursor-pointer" onclick="document.getElementById('photo-upload').click()">
+                            {{ form.photo }}
+                            <i class="fa-solid fa-cloud-arrow-up text-3xl text-gray-400 mb-3"></i>
+                            <p class="text-gray-500 text-sm">Click to upload or drag and drop</p>
+                            <p class="text-xs text-gray-400 mt-1">PNG, JPG up to 5MB</p>
+                        </div>
+                        <div id="photo-preview" class="mt-3 hidden">
+                            <img id="preview-img" class="h-32 rounded-lg border border-gray-200" alt="Preview">
+                        </div>
+                    </div>
+
+                    <!-- Verification Question -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            Verification Question <span class="text-red-500">*</span>
+                        </label>
+                        <p class="text-xs text-gray-500 mb-2">Ask something only the real owner would know</p>
+                        {{ form.verification_question }}
+                    </div>
+
+                    <!-- Description -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Additional Details</label>
+                        {{ form.description }}
+                    </div>
+                </div>
+
+                <!-- LOST ITEM FIELDS (shown only for lost items) -->
+                <div id="lost-fields" class="space-y-6 hidden">
+                    <!-- Date Lost -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            When did you lose it? <span class="text-red-500">*</span>
+                        </label>
+                        {{ form.date_lost }}
+                    </div>
+
+                    <!-- Photo (optional for lost) -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            Upload Photo <span class="text-gray-500 text-xs">(Optional)</span>
+                        </label>
+                        <p class="text-xs text-gray-500 mb-2">If you have a photo of the item</p>
+                        <div class="border-2 border-dashed border-gray-200 rounded-2xl p-8 text-center hover:border-blue-400 transition cursor-pointer" onclick="document.getElementById('photo-upload').click()">
+                            <i class="fa-solid fa-cloud-arrow-up text-3xl text-gray-400 mb-3"></i>
+                            <p class="text-gray-500 text-sm">Click to upload or drag and drop</p>
+                        </div>
+                        <div id="photo-preview-lost" class="mt-3 hidden">
+                            <img id="preview-img-lost" class="h-32 rounded-lg border border-gray-200" alt="Preview">
+                        </div>
+                    </div>
+
+                    <!-- Description -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            Description <span class="text-red-500">*</span>
+                        </label>
+                        <p class="text-xs text-gray-500 mb-2">Describe what the item looks like</p>
+                        {{ form.description }}
+                    </div>
+
+                    <!-- Reward Offered -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            Reward <span class="text-gray-500 text-xs">(Optional)</span>
+                        </label>
+                        {{ form.reward_offered }}
+                    </div>
+
+                    <!-- Contact Preference -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            How should people contact you?
+                        </label>
+                        {{ form.contact_preference }}
+                    </div>
+                </div>
+
+                <button type="submit" class="w-full bg-blue-600 text-white py-4 rounded-xl font-bold text-lg hover:bg-blue-700 transition">
+                    Publish Listing
+                </button>
+            </form>
+        </div>
+    </main>
+
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Toggle active style for Found / Lost
+const foundBtn = document.querySelector('.found-btn');
+const lostBtn = document.querySelector('.lost-btn');
+const hiddenType = document.querySelector('input[name="item_type"]');
+const foundFields = document.getElementById('found-fields');
+const lostFields = document.getElementById('lost-fields');
+
+foundBtn.addEventListener('click', () => {
+    foundBtn.classList.add('bg-white', 'text-blue-600', 'shadow-sm');
+    foundBtn.classList.remove('text-gray-500');
+    lostBtn.classList.remove('bg-white', 'text-blue-600', 'shadow-sm');
+    lostBtn.classList.add('text-gray-500', 'hover:text-gray-700');
+    hiddenType.value = 'found';
+    
+    // Show/hide appropriate fields
+    foundFields.classList.remove('hidden');
+    lostFields.classList.add('hidden');
+});
+
+lostBtn.addEventListener('click', () => {
+    lostBtn.classList.add('bg-white', 'text-blue-600', 'shadow-sm');
+    lostBtn.classList.remove('text-gray-500');
+    foundBtn.classList.remove('bg-white', 'text-blue-600', 'shadow-sm');
+    foundBtn.classList.add('text-gray-500', 'hover:text-gray-700');
+    hiddenType.value = 'lost';
+    
+    // Show/hide appropriate fields
+    lostFields.classList.remove('hidden');
+    foundFields.classList.add('hidden');
+});
+
+// Default to Found
+hiddenType.value = 'found';
+foundBtn.classList.add('bg-white', 'text-blue-600', 'shadow-sm');
+lostBtn.classList.add('text-gray-500', 'hover:text-gray-700');
+
+// Image preview
+const photoInput = document.getElementById('photo-upload');
+photoInput.addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(event) {
+            const previewDiv = document.getElementById('photo-preview');
+            const previewDivLost = document.getElementById('photo-preview-lost');
+            const previewImg = document.getElementById('preview-img');
+            const previewImgLost = document.getElementById('preview-img-lost');
+            
+            previewImg.src = event.target.result;
+            previewImgLost.src = event.target.result;
+            previewDiv.classList.remove('hidden');
+            previewDivLost.classList.remove('hidden');
+        };
+        reader.readAsDataURL(file);
+    }
+});
+</script>
+{% endblock %}
