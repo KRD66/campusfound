@@ -1,0 +1,130 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+
+    <!-- Hero / Search section -->
+    <header class="bg-white py-16 border-b border-gray-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h1 class="text-4xl sm:text-5xl font-extrabold text-gray-900 leading-tight">
+                Lost something?<br>We'll help you find it.
+            </h1>
+            <p class="mt-5 text-xl text-gray-600 max-w-3xl mx-auto">
+                The central hub for lost and found items at your university.
+            </p>
+
+            <form method="get" action="{% url 'items:home' %}" class="mt-10 max-w-2xl mx-auto relative">
+                <input type="text"
+                       name="q"
+                       value="{{ search_query }}"
+                       placeholder="Search for keys, IDs, laptops, earbuds..."
+                       class="w-full pl-12 pr-5 py-4 rounded-2xl border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none shadow-sm text-lg">
+                <i class="fa-solid fa-search absolute left-5 top-1/2 -translate-y-1/2 text-gray-400 text-xl"></i>
+                <button type="submit" class="hidden">Search</button>
+            </form>
+        </div>
+    </header>
+
+    <!-- Recent Listings section -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div class="flex flex-col sm:flex-row sm:items-end justify-between mb-10">
+            <div>
+                <h2 class="text-2xl sm:text-3xl font-bold text-gray-900">Recent Listings</h2>
+                <div class="flex flex-wrap gap-3 mt-3">
+                    <a href="{% url 'items:home' %}?sort={{ current_sort }}" 
+                       class="px-4 py-1.5 {% if current_filter == 'all' %}bg-blue-600 text-white{% else %}bg-white border border-gray-300 text-gray-700 hover:bg-gray-50{% endif %} rounded-full text-sm font-medium transition">
+                        All Items
+                    </a>
+                    <a href="{% url 'items:home' %}?type=lost&sort={{ current_sort }}" 
+                       class="px-4 py-1.5 {% if current_filter == 'lost' %}bg-blue-600 text-white{% else %}bg-white border border-gray-300 text-gray-700 hover:bg-gray-50{% endif %} rounded-full text-sm font-medium transition">
+                        Lost
+                    </a>
+                    <a href="{% url 'items:home' %}?type=found&sort={{ current_sort }}" 
+                       class="px-4 py-1.5 {% if current_filter == 'found' %}bg-blue-600 text-white{% else %}bg-white border border-gray-300 text-gray-700 hover:bg-gray-50{% endif %} rounded-full text-sm font-medium transition">
+                        Found
+                    </a>
+                </div>
+            </div>
+            <form method="get" action="{% url 'items:home' %}">
+                {% if current_filter != 'all' %}
+                    <input type="hidden" name="type" value="{{ current_filter }}">
+                {% endif %}
+                {% if search_query %}
+                    <input type="hidden" name="q" value="{{ search_query }}">
+                {% endif %}
+                <select name="sort" 
+                        onchange="this.form.submit()" 
+                        class="mt-4 sm:mt-0 border border-gray-300 rounded-lg px-4 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <option value="newest" {% if current_sort == 'newest' %}selected{% endif %}>Newest First</option>
+                    <option value="oldest" {% if current_sort == 'oldest' %}selected{% endif %}>Oldest First</option>
+                </select>
+            </form>
+        </div>
+
+        <!-- Grid -->
+        {% if items %}
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                {% for item in items %}
+                    <a href="{% url 'items:item_detail' item.id %}" class="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition border border-gray-100 block">
+                        <div class="h-48 bg-gray-100 relative">
+                            {% if item.photo %}
+                                <img src="{{ item.photo.url }}" alt="{{ item.title }}" class="w-full h-full object-cover">
+                            {% else %}
+                                <div class="w-full h-full flex items-center justify-center">
+                                    <i class="fa-solid fa-image text-gray-300 text-5xl"></i>
+                                </div>
+                            {% endif %}
+                            
+                            {% if item.item_type == 'lost' %}
+                                <span class="absolute top-3 left-3 bg-red-500 text-white text-xs font-bold px-3 py-1 rounded-full">LOST</span>
+                            {% else %}
+                                <span class="absolute top-3 left-3 bg-green-600 text-white text-xs font-bold px-3 py-1 rounded-full">FOUND</span>
+                            {% endif %}
+                            
+                            {% if item.category %}
+                                <span class="absolute top-3 right-3 bg-white/90 text-gray-700 text-xs px-2 py-1 rounded-full">
+                                    {{ item.category }}
+                                </span>
+                            {% endif %}
+                        </div>
+                        <div class="p-5">
+                            <h3 class="font-bold text-lg line-clamp-1">{{ item.title }}</h3>
+                            <p class="text-sm text-gray-500 mt-1">
+                                <i class="fa-solid fa-location-dot mr-1"></i> 
+                                {{ item.location|default:"Location not specified" }}
+                            </p>
+                            
+                            {% if item.item_type == 'lost' and item.reward_offered %}
+                                <p class="text-sm text-green-600 font-medium mt-2">
+                                    <i class="fa-solid fa-gift mr-1"></i> {{ item.reward_offered }}
+                                </p>
+                            {% endif %}
+                            
+                            <div class="mt-4 flex justify-between items-center text-sm">
+                                <span class="text-gray-400">{{ item.created_at|timesince }} ago</span>
+                                <span class="text-blue-600 font-medium hover:underline">View</span>
+                            </div>
+                        </div>
+                    </a>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="text-center py-16">
+                <i class="fa-solid fa-inbox text-gray-300 text-6xl mb-4"></i>
+                <h3 class="text-xl font-semibold text-gray-600 mb-2">No items found</h3>
+                <p class="text-gray-500">
+                    {% if search_query %}
+                        Try a different search term
+                    {% else %}
+                        Be the first to post an item!
+                    {% endif %}
+                </p>
+                <a href="{% url 'items:post_item' %}" class="inline-block mt-6 bg-blue-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-blue-700 transition">
+                    Post an Item
+                </a>
+            </div>
+        {% endif %}
+    </section>
+
+{% endblock %}
