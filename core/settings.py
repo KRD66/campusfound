@@ -26,8 +26,7 @@ SECRET_KEY = 'django-insecure-3^bwi*(ewl0ox8dsbvju52_l_!_y_+gw+2b-)@aefoa_#i@(v3
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ALLOWED_HOSTS = ['https://campusfound-x8ht.onrender.com', 'localhost', '127.0.0.1']
-
+ALLOWED_HOSTS = ALLOWED_HOSTS = ['https://campusfound-x8ht.onrender.com']
 
 # Application definition
 
