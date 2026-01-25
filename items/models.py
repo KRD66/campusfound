@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.utils import timezone
-from cloudinary.models import CloudinaryField  # ← Added for Cloudinary
+from cloudinary.models import CloudinaryField
 
 User = get_user_model()
 
@@ -34,7 +34,7 @@ class Item(models.Model):
         ('returned', 'Returned'),
     )
 
-    # ── Common fields ────────────────────────────────────────────────────────
+    # Common fields
     poster = models.ForeignKey(User, on_delete=models.CASCADE, related_name='items')
     item_type = models.CharField(max_length=10, choices=TYPE_CHOICES)
     title = models.CharField(max_length=200)
@@ -51,20 +51,20 @@ class Item(models.Model):
         help_text="Type the location (e.g. Main Library, Science Cafe...)"
     )
     
-    # ── Cloudinary image field (replaces ImageField) ─────────────────────────
+    # Cloudinary image
     photo = CloudinaryField(
-        'image',                    # folder/resource type in Cloudinary
+        'image',
         blank=True,
         null=True,
         resource_type='image',
-        folder='campusfound/items',  # optional: organizes images in your Cloudinary dashboard
+        folder='campusfound/items',
         help_text="Upload photo of the item"
     )
     
     description = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
-    # ── Lost-item-specific fields ────────────────────────────────────────────
+    # Lost-item-specific
     date_lost = models.DateField(
         blank=True,
         null=True,
@@ -82,13 +82,20 @@ class Item(models.Model):
         blank=True
     )
 
-    # ── Found-item-specific fields ───────────────────────────────────────────
+    # Found-item-specific
     verification_question = models.TextField(
         blank=True,
         help_text="Ask a question only the owner would know"
     )
 
-    # ── Status ───────────────────────────────────────────────────────────────
+    # New contact field
+    contact_info = models.CharField(
+        max_length=200,
+        blank=True,
+        help_text="Optional: your email or WhatsApp number (e.g. whatsapp:+2348012345678)"
+    )
+
+    # Status
     status = models.CharField(
         max_length=20,
         choices=STATUS_CHOICES,
@@ -99,4 +106,4 @@ class Item(models.Model):
         return f"{self.item_type.title()}: {self.title}"
 
     class Meta:
-        ordering = ['-created_at']  # newest first
+        ordering = ['-created_at']

@@ -8,7 +8,7 @@ class ItemForm(forms.ModelForm):
         fields = [
             'item_type', 'title', 'category', 'location', 'photo',
             'description', 'date_lost', 'reward_offered', 'contact_preference',
-            'verification_question'
+            'verification_question', 'contact_info'
         ]
 
         widgets = {
@@ -30,7 +30,7 @@ class ItemForm(forms.ModelForm):
 
             'photo': forms.FileInput(attrs={
                 'class': 'hidden',
-                'id': 'id_photo'  # matches your template onclick
+                'id': 'id_photo'
             }),
 
             'description': forms.Textarea(attrs={
@@ -39,7 +39,6 @@ class ItemForm(forms.ModelForm):
                 'placeholder': 'Describe the item in detail...'
             }),
 
-            # Lost item fields
             'date_lost': forms.DateInput(attrs={
                 'type': 'date',
                 'class': 'w-full p-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none'
@@ -54,11 +53,15 @@ class ItemForm(forms.ModelForm):
                 'class': 'w-full p-3 rounded-xl border border-gray-200 outline-none'
             }),
 
-            # Found item field
             'verification_question': forms.Textarea(attrs={
                 'class': 'w-full p-3 rounded-xl border border-gray-200 outline-none',
                 'rows': 3,
                 'placeholder': 'e.g. What stickers are on the laptop? What color is the case?'
+            }),
+
+            'contact_info': forms.TextInput(attrs={
+                'class': 'w-full p-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none',
+                'placeholder': 'Email or WhatsApp (e.g. whatsapp:+2348012345678)'
             }),
         }
 
@@ -66,11 +69,9 @@ class ItemForm(forms.ModelForm):
         cleaned_data = super().clean()
         item_type = cleaned_data.get('item_type')
 
-        # Found items must have verification question
         if item_type == 'found' and not cleaned_data.get('verification_question'):
             self.add_error('verification_question', 'Please add a verification question for found items')
 
-        # Lost items must have date_lost
         if item_type == 'lost' and not cleaned_data.get('date_lost'):
             self.add_error('date_lost', 'Please specify when you lost this item')
 

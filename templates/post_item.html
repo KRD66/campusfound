@@ -152,6 +152,15 @@
                         </label>
                         {{ form.contact_preference }}
                     </div>
+
+                    <!-- Contact Info (new) -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            Contact Info (email or WhatsApp)
+                        </label>
+                        <p class="text-xs text-gray-500 mb-2">Optional — will be shown publicly on the listing</p>
+                        {{ form.contact_info }}
+                    </div>
                 </div>
 
                 <button type="submit" class="w-full bg-blue-600 text-white py-4 rounded-xl font-bold text-lg hover:bg-blue-700 transition">
@@ -201,7 +210,7 @@ hiddenType.value = 'found';
 foundBtn.classList.add('bg-white', 'text-blue-600', 'shadow-sm');
 lostBtn.classList.add('text-gray-500', 'hover:text-gray-700');
 
-// Image preview for both found and lost
+// Image preview
 const photoInput = document.querySelector('input[type="file"][name="photo"]');
 photoInput.addEventListener('change', function(e) {
     const file = e.target.files[0];
