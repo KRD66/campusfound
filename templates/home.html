@@ -69,10 +69,7 @@
                     <a href="{% url 'items:item_detail' item.id %}" class="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition border border-gray-100 block">
                         <div class="h-48 bg-gray-100 relative">
                             {% if item.photo %}
-                                <!-- Cloudinary thumbnail: 400x300, fill crop, auto quality -->
-                                <img src="{{ item.photo.url|cloudinary_url:'w_400,h_300,c_fill,q_auto' }}" 
-                                     alt="{{ item.title }}" 
-                                     class="w-full h-full object-cover">
+                                <img src="{{ item.photo.url }}" alt="{{ item.title }}" class="w-full h-full object-cover">
                             {% else %}
                                 <div class="w-full h-full flex items-center justify-center">
                                     <i class="fa-solid fa-image text-gray-300 text-5xl"></i>
