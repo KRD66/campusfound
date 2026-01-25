@@ -9,6 +9,7 @@ decorator==5.2.1
 dj-database-url==3.0.1
 Django==5.1.6
 django-cors-headers==4.7.0
+django-cloudinary-storage==0.3.0
 django-extensions==4.1
 django-filter==25.1
 django-sslserver==0.22

@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 from pathlib import Path
 import os
 
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -41,6 +42,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'cloudinary_storage',
+    'cloudinary',
     'items',
     'accounts',
     'chats',
@@ -140,9 +143,7 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Media files (user uploads: photos of items)
-MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
+
 
 
 
@@ -170,3 +171,17 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
+
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
+
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': os.environ.get('CLOUDINARY_CLOUD_NAME', 'your_cloud_name'),
+    'API_KEY': os.environ.get('CLOUDINARY_API_KEY', 'your_api_key'),
+    'API_SECRET': os.environ.get('CLOUDINARY_API_SECRET', 'your_api_secret'),
+}
+
+MEDIA_URL = '/media/'
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
