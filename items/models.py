@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.utils import timezone
+from cloudinary.models import CloudinaryField  # ← Added for Cloudinary
 
 User = get_user_model()
 
@@ -27,7 +28,13 @@ class Item(models.Model):
         ('chat', 'In-App Chat'),
     )
 
-    # Common fields
+    STATUS_CHOICES = (
+        ('active', 'Active'),
+        ('claimed', 'Claimed'),
+        ('returned', 'Returned'),
+    )
+
+    # ── Common fields ────────────────────────────────────────────────────────
     poster = models.ForeignKey(User, on_delete=models.CASCADE, related_name='items')
     item_type = models.CharField(max_length=10, choices=TYPE_CHOICES)
     title = models.CharField(max_length=200)
@@ -41,13 +48,23 @@ class Item(models.Model):
     location = models.CharField(
         max_length=200,
         blank=True,
-        help_text="Type the location (e.g. Main Library, Science Cafe, Student Union...)"
+        help_text="Type the location (e.g. Main Library, Science Cafe...)"
     )
-    photo = models.ImageField(upload_to='items/%Y/%m/%d/', blank=True, null=True)
+    
+    # ── Cloudinary image field (replaces ImageField) ─────────────────────────
+    photo = CloudinaryField(
+        'image',                    # folder/resource type in Cloudinary
+        blank=True,
+        null=True,
+        resource_type='image',
+        folder='campusfound/items',  # optional: organizes images in your Cloudinary dashboard
+        help_text="Upload photo of the item"
+    )
+    
     description = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
-    # Fields specific to LOST items
+    # ── Lost-item-specific fields ────────────────────────────────────────────
     date_lost = models.DateField(
         blank=True,
         null=True,
@@ -65,19 +82,13 @@ class Item(models.Model):
         blank=True
     )
 
-    # Fields specific to FOUND items
+    # ── Found-item-specific fields ───────────────────────────────────────────
     verification_question = models.TextField(
         blank=True,
         help_text="Ask a question only the owner would know"
     )
 
-    # Status field
-    STATUS_CHOICES = (
-        ('active', 'Active'),
-        ('claimed', 'Claimed'),
-        ('returned', 'Returned'),
-    )
-    
+    # ── Status ───────────────────────────────────────────────────────────────
     status = models.CharField(
         max_length=20,
         choices=STATUS_CHOICES,
