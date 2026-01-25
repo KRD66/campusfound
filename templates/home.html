@@ -103,18 +103,16 @@
                                 </p>
                             {% endif %}
 
-                            <!-- Contact Info Display -->
+                            <!-- Contact Info Display (new) -->
                             {% if item.contact_info %}
-                                <p class="text-sm mt-2">
-                                    <i class="fa-solid fa-envelope mr-1 text-gray-500"></i>
+                                <p class="text-sm text-gray-600 mt-2">
+                                    <i class="fa-solid fa-envelope mr-1"></i>
                                     {% if 'whatsapp:' in item.contact_info %}
-                                        <a href="https://wa.me/{{ item.contact_info|cut:'whatsapp:' }}" 
-                                           target="_blank" 
-                                           class="text-green-600 hover:underline font-medium">
-                                            Chat on WhatsApp
+                                        <a href="https://wa.me/{{ item.contact_info|cut:'whatsapp:' }}" target="_blank" class="text-green-600 hover:underline">
+                                            {{ item.contact_info|cut:'whatsapp:' }}
                                         </a>
                                     {% else %}
-                                        <span class="text-gray-600">{{ item.contact_info }}</span>
+                                        {{ item.contact_info }}
                                     {% endif %}
                                 </p>
                             {% endif %}
