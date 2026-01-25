@@ -104,6 +104,24 @@
                         </div>
                     {% endif %}
 
+                    <!-- Contact Info (new) -->
+                    {% if item.contact_info %}
+                        <div class="bg-gray-50 border border-gray-200 rounded-xl p-4 mb-6">
+                            <h3 class="font-semibold text-gray-900 mb-2">Contact the Poster</h3>
+                            {% if 'whatsapp:' in item.contact_info %}
+                                <a href="https://wa.me/{{ item.contact_info|cut:'whatsapp:' }}" target="_blank" class="inline-flex items-center text-green-600 hover:text-green-800 font-medium">
+                                    <i class="fa-brands fa-whatsapp text-xl mr-2"></i>
+                                    Chat on WhatsApp
+                                </a>
+                            {% else %}
+                                <p class="text-gray-700">
+                                    <i class="fa-solid fa-envelope mr-2"></i>
+                                    {{ item.contact_info }}
+                                </p>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+
                     <!-- Contact Section -->
                     <div class="border-t pt-6">
                         <h3 class="font-semibold text-gray-900 mb-4">Contact the {{ item.item_type|title }} Person</h3>

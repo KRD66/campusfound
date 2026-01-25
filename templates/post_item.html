@@ -101,6 +101,15 @@
                         <label class="block text-sm font-medium text-gray-700 mb-2">Additional Details</label>
                         {{ form.description }}
                     </div>
+
+                    <!-- Contact Info -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            Contact Info (email or WhatsApp)
+                        </label>
+                        <p class="text-xs text-gray-500 mb-2">Optional — will be shown publicly on the listing</p>
+                        {{ form.contact_info }}
+                    </div>
                 </div>
 
                 <!-- LOST ITEM FIELDS -->
@@ -153,7 +162,7 @@
                         {{ form.contact_preference }}
                     </div>
 
-                    <!-- Contact Info (new) -->
+                    <!-- Contact Info -->
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">
                             Contact Info (email or WhatsApp)
