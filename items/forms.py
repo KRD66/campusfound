@@ -86,9 +86,12 @@ class ItemForm(forms.ModelForm):
 class ReviewForm(forms.ModelForm):
     class Meta:
         model = Review
-        fields = ['comment']
+        fields = ['rating', 'comment']
         
         widgets = {
+            'rating': forms.RadioSelect(attrs={
+                'class': 'hidden'
+            }),
             'comment': forms.Textarea(attrs={
                 'class': 'w-full p-4 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none',
                 'rows': 4,
@@ -96,5 +99,6 @@ class ReviewForm(forms.ModelForm):
             }),
         }
         labels = {
+            'rating': 'Rating',
             'comment': 'Your Review'
         }

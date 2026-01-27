@@ -11,4 +11,6 @@ urlpatterns = [
     path('item/<int:item_id>/edit/', views.edit_item, name='edit_item'),
     path('item/<int:item_id>/delete/', views.delete_item, name='delete_item'),
     path('item/<int:item_id>/mark-returned/', views.mark_as_returned, name='mark_as_returned'),
+    path('item/<int:item_id>/claim/', views.claim_item, name='claim_item'),  # ADD THIS
+    path('item/<int:item_id>/review/', views.add_review, name='add_review'),  # ADD THIS
 ]

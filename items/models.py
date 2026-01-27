@@ -125,6 +125,10 @@ class Review(models.Model):
     """Reviews for returned items"""
     item = models.ForeignKey(Item, on_delete=models.CASCADE, related_name='reviews')
     reviewer = models.ForeignKey(User, on_delete=models.CASCADE, related_name='reviews_written')
+    rating = models.IntegerField(
+        choices=[(1, '1 Star'), (2, '2 Stars'), (3, '3 Stars'), (4, '4 Stars'), (5, '5 Stars')],
+        help_text="Rate your experience (1-5 stars)"
+    )
     comment = models.TextField(help_text="Share your experience")
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -134,4 +138,4 @@ class Review(models.Model):
         unique_together = ['item', 'reviewer']
 
     def __str__(self):
-        return f"Review by {self.reviewer.email} for {self.item.title}"
+        return f"Review by {self.reviewer.email} for {self.item.title} - {self.rating} stars"
