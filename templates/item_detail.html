@@ -206,7 +206,7 @@
                 </h2>
 
                 <!-- Add Review Form (Only for claimer) -->
-                {% if user == item.claimed_by and not item.reviews.filter(reviewer=user).exists %}
+                {% if user == item.claimed_by and not user_has_reviewed %}
                     <div class="bg-blue-50 border border-blue-200 rounded-xl p-6 mb-6">
                         <h3 class="font-semibold text-blue-900 mb-4">Share Your Experience</h3>
                         <form method="post" action="{% url 'items:add_review' item.id %}" id="reviewForm">

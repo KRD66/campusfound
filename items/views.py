@@ -44,9 +44,15 @@ def item_detail(request, item_id):
     item = get_object_or_404(Item, id=item_id)
     review_form = ReviewForm()
     
+    # Check if user has already reviewed
+    user_has_reviewed = False
+    if request.user.is_authenticated:
+        user_has_reviewed = Review.objects.filter(item=item, reviewer=request.user).exists()
+    
     return render(request, 'item_detail.html', {
         'item': item,
         'review_form': review_form,
+        'user_has_reviewed': user_has_reviewed,
     })
 
 
@@ -56,11 +62,21 @@ def post_item(request):
     if request.method == 'POST':
         form = ItemForm(request.POST, request.FILES)
         if form.is_valid():
-            item = form.save(commit=False)
-            item.poster = request.user
-            item.save()
-            messages.success(request, 'Item posted successfully!')
-            return redirect('items:item_detail', item_id=item.id)
+            try:
+                item = form.save(commit=False)
+                item.poster = request.user
+                item.save()
+                messages.success(request, 'Item posted successfully!')
+                return redirect('items:item_detail', item_id=item.id)
+            except Exception as e:
+                # Print the actual error
+                print(f"Error saving item: {str(e)}")
+                messages.error(request, f'Error posting item: {str(e)}')
+                return render(request, 'post_item.html', {'form': form})
+        else:
+            # Print form errors
+            print(f"Form errors: {form.errors}")
+            messages.error(request, 'Please fix the errors below.')
     else:
         form = ItemForm()
 
@@ -100,9 +116,13 @@ def edit_item(request, item_id):
     if request.method == 'POST':
         form = ItemForm(request.POST, request.FILES, instance=item)
         if form.is_valid():
-            form.save()
-            messages.success(request, 'Item updated successfully!')
-            return redirect('items:dashboard')
+            try:
+                form.save()
+                messages.success(request, 'Item updated successfully!')
+                return redirect('items:dashboard')
+            except Exception as e:
+                print(f"Error updating item: {str(e)}")
+                messages.error(request, f'Error updating item: {str(e)}')
     else:
         form = ItemForm(instance=item)
     
