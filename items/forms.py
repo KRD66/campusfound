@@ -1,5 +1,5 @@
 from django import forms
-from .models import Item
+from .models import Item, Review
 
 
 class ItemForm(forms.ModelForm):
@@ -7,8 +7,8 @@ class ItemForm(forms.ModelForm):
         model = Item
         fields = [
             'item_type', 'title', 'category', 'location', 'photo',
-            'description', 'date_lost', 'reward_offered', 'contact_preference',
-            'verification_question', 'contact_info'
+            'description', 'date_lost', 'reward_offered',
+            'verification_question', 'phone_number', 'email'
         ]
 
         widgets = {
@@ -49,19 +49,20 @@ class ItemForm(forms.ModelForm):
                 'placeholder': 'e.g. $20 reward, Coffee on me! (optional)'
             }),
 
-            'contact_preference': forms.Select(attrs={
-                'class': 'w-full p-3 rounded-xl border border-gray-200 outline-none'
-            }),
-
             'verification_question': forms.Textarea(attrs={
                 'class': 'w-full p-3 rounded-xl border border-gray-200 outline-none',
                 'rows': 3,
                 'placeholder': 'e.g. What stickers are on the laptop? What color is the case?'
             }),
 
-            'contact_info': forms.TextInput(attrs={
+            'phone_number': forms.TextInput(attrs={
                 'class': 'w-full p-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none',
-                'placeholder': 'Email or WhatsApp (e.g. whatsapp:+2348012345678)'
+                'placeholder': '+234 801 234 5678 (for WhatsApp)'
+            }),
+
+            'email': forms.EmailInput(attrs={
+                'class': 'w-full p-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none',
+                'placeholder': 'your.email@university.edu'
             }),
         }
 
@@ -74,5 +75,26 @@ class ItemForm(forms.ModelForm):
 
         if item_type == 'lost' and not cleaned_data.get('date_lost'):
             self.add_error('date_lost', 'Please specify when you lost this item')
+        
+        # At least one contact method required
+        if not cleaned_data.get('phone_number') and not cleaned_data.get('email'):
+            raise forms.ValidationError('Please provide at least one contact method (phone or email)')
 
         return cleaned_data
+
+
+class ReviewForm(forms.ModelForm):
+    class Meta:
+        model = Review
+        fields = ['comment']
+        
+        widgets = {
+            'comment': forms.Textarea(attrs={
+                'class': 'w-full p-4 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none',
+                'rows': 4,
+                'placeholder': 'Share your experience with this exchange...'
+            }),
+        }
+        labels = {
+            'comment': 'Your Review'
+        }

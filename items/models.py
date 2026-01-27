@@ -22,12 +22,6 @@ class Item(models.Model):
         ('Other', 'Other'),
     )
 
-    CONTACT_PREFERENCE_CHOICES = (
-        ('email', 'Email'),
-        ('phone', 'Phone'),
-        ('chat', 'In-App Chat'),
-    )
-
     STATUS_CHOICES = (
         ('active', 'Active'),
         ('claimed', 'Claimed'),
@@ -75,12 +69,6 @@ class Item(models.Model):
         blank=True,
         help_text="Optional: e.g. '$20 reward' or 'Coffee on me!'"
     )
-    contact_preference = models.CharField(
-        max_length=20,
-        choices=CONTACT_PREFERENCE_CHOICES,
-        default='chat',
-        blank=True
-    )
 
     # Found-item-specific
     verification_question = models.TextField(
@@ -88,22 +76,62 @@ class Item(models.Model):
         help_text="Ask a question only the owner would know"
     )
 
-    # New contact field
-    contact_info = models.CharField(
+    # Contact fields (replaces chat system)
+    phone_number = models.CharField(
+        max_length=20,
+        blank=True,
+        help_text="Your phone/WhatsApp number (e.g. +2348012345678)"
+    )
+    email = models.EmailField(
         max_length=200,
         blank=True,
-        help_text="Optional: your email or WhatsApp number (e.g. whatsapp:+2348012345678)"
+        help_text="Your email address"
     )
 
-    # Status
+    # Status and claimer
     status = models.CharField(
         max_length=20,
         choices=STATUS_CHOICES,
         default='active'
     )
+    claimed_by = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='claimed_items',
+        help_text="User who claimed this item"
+    )
 
     def __str__(self):
         return f"{self.item_type.title()}: {self.title}"
 
+    def get_whatsapp_link(self):
+        """Generate WhatsApp link from phone number"""
+        if self.phone_number:
+            # Remove spaces, dashes, and other non-numeric characters
+            clean_number = ''.join(filter(str.isdigit, self.phone_number))
+            # Add + if not present
+            if not clean_number.startswith('+'):
+                clean_number = '+' + clean_number
+            return f"https://wa.me/{clean_number}"
+        return None
+
     class Meta:
         ordering = ['-created_at']
+
+
+class Review(models.Model):
+    """Reviews for returned items"""
+    item = models.ForeignKey(Item, on_delete=models.CASCADE, related_name='reviews')
+    reviewer = models.ForeignKey(User, on_delete=models.CASCADE, related_name='reviews_written')
+    comment = models.TextField(help_text="Share your experience")
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
+        # Ensure one review per user per item
+        unique_together = ['item', 'reviewer']
+
+    def __str__(self):
+        return f"Review by {self.reviewer.email} for {self.item.title}"

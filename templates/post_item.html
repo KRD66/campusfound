@@ -101,15 +101,6 @@
                         <label class="block text-sm font-medium text-gray-700 mb-2">Additional Details</label>
                         {{ form.description }}
                     </div>
-
-                    <!-- Contact Info -->
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">
-                            Contact Info (email or WhatsApp)
-                        </label>
-                        <p class="text-xs text-gray-500 mb-2">Optional — will be shown publicly on the listing</p>
-                        {{ form.contact_info }}
-                    </div>
                 </div>
 
                 <!-- LOST ITEM FIELDS -->
@@ -153,22 +144,25 @@
                         </label>
                         {{ form.reward_offered }}
                     </div>
+                </div>
 
-                    <!-- Contact Preference -->
+                <!-- Contact Info (for both types) -->
+                <div class="space-y-4 border-t pt-6">
+                    <h3 class="font-semibold text-gray-900">Your Contact Information <span class="text-red-500">*</span></h3>
+                    <p class="text-sm text-gray-500">Provide at least one way for people to reach you (visible only to logged-in users)</p>
+                    
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">
-                            How should people contact you?
+                            <i class="fa-brands fa-whatsapp text-green-600 mr-1"></i> WhatsApp/Phone Number
                         </label>
-                        {{ form.contact_preference }}
+                        {{ form.phone_number }}
                     </div>
 
-                    <!-- Contact Info -->
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">
-                            Contact Info (email or WhatsApp)
+                            <i class="fa-solid fa-envelope text-blue-600 mr-1"></i> Email Address
                         </label>
-                        <p class="text-xs text-gray-500 mb-2">Optional — will be shown publicly on the listing</p>
-                        {{ form.contact_info }}
+                        {{ form.email }}
                     </div>
                 </div>
 
@@ -221,23 +215,25 @@ lostBtn.classList.add('text-gray-500', 'hover:text-gray-700');
 
 // Image preview
 const photoInput = document.querySelector('input[type="file"][name="photo"]');
-photoInput.addEventListener('change', function(e) {
-    const file = e.target.files[0];
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = function(event) {
-            const previewImg = document.getElementById('preview-img');
-            const previewImgLost = document.getElementById('preview-img-lost');
-            const previewDiv = document.getElementById('photo-preview');
-            const previewDivLost = document.getElementById('photo-preview-lost');
-            
-            previewImg.src = event.target.result;
-            previewImgLost.src = event.target.result;
-            previewDiv.classList.remove('hidden');
-            previewDivLost.classList.remove('hidden');
-        };
-        reader.readAsDataURL(file);
-    }
-});
+if (photoInput) {
+    photoInput.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const previewImg = document.getElementById('preview-img');
+                const previewImgLost = document.getElementById('preview-img-lost');
+                const previewDiv = document.getElementById('photo-preview');
+                const previewDivLost = document.getElementById('photo-preview-lost');
+                
+                if (previewImg) previewImg.src = event.target.result;
+                if (previewImgLost) previewImgLost.src = event.target.result;
+                if (previewDiv) previewDiv.classList.remove('hidden');
+                if (previewDivLost) previewDivLost.classList.remove('hidden');
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+}
 </script>
 {% endblock %}
