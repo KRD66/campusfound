@@ -123,31 +123,31 @@
 
                     <!-- Contact Section (Only for logged-in users) -->
                     {% if user.is_authenticated %}
-                        {% if item.phone_number or item.email %}
+                        {% if item.contact_info %}
                             <div class="border-t pt-6 mb-6">
                                 <h3 class="font-semibold text-gray-900 mb-4">Contact Information</h3>
                                 
                                 <div class="space-y-3">
-                                    {% if item.phone_number %}
+                                    {% if 'whatsapp:' in item.contact_info %}
+                                        <!-- WhatsApp Contact -->
                                         <a href="{{ item.get_whatsapp_link }}" target="_blank" class="flex items-center gap-3 p-4 bg-green-50 hover:bg-green-100 rounded-xl transition">
                                             <div class="w-10 h-10 bg-green-600 rounded-full flex items-center justify-center">
                                                 <i class="fa-brands fa-whatsapp text-white text-xl"></i>
                                             </div>
                                             <div>
                                                 <p class="font-semibold text-green-900">Chat on WhatsApp</p>
-                                                <p class="text-sm text-green-700">{{ item.phone_number }}</p>
+                                                <p class="text-sm text-green-700">{{ item.contact_info|cut:'whatsapp:' }}</p>
                                             </div>
                                         </a>
-                                    {% endif %}
-
-                                    {% if item.email %}
-                                        <a href="mailto:{{ item.email }}" class="flex items-center gap-3 p-4 bg-blue-50 hover:bg-blue-100 rounded-xl transition">
+                                    {% else %}
+                                        <!-- Email Contact -->
+                                        <a href="mailto:{{ item.contact_info }}" class="flex items-center gap-3 p-4 bg-blue-50 hover:bg-blue-100 rounded-xl transition">
                                             <div class="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center">
                                                 <i class="fa-solid fa-envelope text-white"></i>
                                             </div>
                                             <div>
                                                 <p class="font-semibold text-blue-900">Send Email</p>
-                                                <p class="text-sm text-blue-700">{{ item.email }}</p>
+                                                <p class="text-sm text-blue-700">{{ item.contact_info }}</p>
                                             </div>
                                         </a>
                                     {% endif %}

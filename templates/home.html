@@ -102,26 +102,10 @@
                                     <i class="fa-solid fa-gift mr-1"></i> {{ item.reward_offered }}
                                 </p>
                             {% endif %}
-
-                            <!-- Contact Info Display -->
-                            {% if item.contact_info %}
-                                <p class="text-sm text-gray-600 mt-2">
-                                    <i class="fa-solid fa-envelope mr-1"></i>
-                                    {% if 'whatsapp:' in item.contact_info %}
-                                        <a href="https://wa.me/{{ item.contact_info|cut:'whatsapp:' }}" 
-                                           target="_blank" 
-                                           class="text-green-600 hover:underline font-medium">
-                                            Chat on WhatsApp
-                                        </a>
-                                    {% else %}
-                                        {{ item.contact_info }}
-                                    {% endif %}
-                                </p>
-                            {% endif %}
                             
                             <div class="mt-4 flex justify-between items-center text-sm">
                                 <span class="text-gray-400">{{ item.created_at|timesince }} ago</span>
-                                <span class="text-blue-600 font-medium hover:underline">View</span>
+                                <span class="text-blue-600 font-medium hover:underline">View Details →</span>
                             </div>
                         </div>
                     </a>

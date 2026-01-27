@@ -8,7 +8,7 @@ class ItemForm(forms.ModelForm):
         fields = [
             'item_type', 'title', 'category', 'location', 'photo',
             'description', 'date_lost', 'reward_offered',
-            'verification_question', 'contact_info'  # ← replaced phone/email
+            'verification_question', 'contact_info'
         ]
 
         widgets = {
@@ -57,9 +57,38 @@ class ItemForm(forms.ModelForm):
 
             'contact_info': forms.TextInput(attrs={
                 'class': 'w-full p-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none',
-                'placeholder': 'Email or WhatsApp (e.g. whatsapp:+2348012345678)'
+                'placeholder': 'Email or Phone Number (e.g. email@example.com or 08012345678)'
             }),
         }
+
+    def clean_contact_info(self):
+        """Auto-detect and format phone numbers as WhatsApp links"""
+        contact = self.cleaned_data.get('contact_info', '').strip()
+        
+        if contact:
+            # Check if it's an email (contains @)
+            if '@' in contact:
+                return contact
+            
+            # Otherwise treat as phone number
+            # Remove any spaces, dashes, or parentheses
+            phone = contact.replace(' ', '').replace('-', '').replace('(', '').replace(')', '')
+            
+            # If it doesn't already have whatsapp: prefix, add it
+            if not phone.startswith('whatsapp:'):
+                # Add + if not present and starts with country code
+                if not phone.startswith('+'):
+                    # Assume Nigerian number if starts with 0
+                    if phone.startswith('0'):
+                        phone = '+234' + phone[1:]
+                    else:
+                        phone = '+' + phone
+                
+                return f'whatsapp:{phone}'
+            
+            return phone
+        
+        return contact
 
     def clean(self):
         cleaned_data = super().clean()
