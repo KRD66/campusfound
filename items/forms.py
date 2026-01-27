@@ -8,7 +8,7 @@ class ItemForm(forms.ModelForm):
         fields = [
             'item_type', 'title', 'category', 'location', 'photo',
             'description', 'date_lost', 'reward_offered',
-            'verification_question', 'phone_number', 'email'
+            'verification_question', 'contact_info'  # ← replaced phone/email
         ]
 
         widgets = {
@@ -55,14 +55,9 @@ class ItemForm(forms.ModelForm):
                 'placeholder': 'e.g. What stickers are on the laptop? What color is the case?'
             }),
 
-            'phone_number': forms.TextInput(attrs={
+            'contact_info': forms.TextInput(attrs={
                 'class': 'w-full p-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none',
-                'placeholder': '+234 801 234 5678 (for WhatsApp)'
-            }),
-
-            'email': forms.EmailInput(attrs={
-                'class': 'w-full p-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none',
-                'placeholder': 'your.email@university.edu'
+                'placeholder': 'Email or WhatsApp (e.g. whatsapp:+2348012345678)'
             }),
         }
 
@@ -75,10 +70,6 @@ class ItemForm(forms.ModelForm):
 
         if item_type == 'lost' and not cleaned_data.get('date_lost'):
             self.add_error('date_lost', 'Please specify when you lost this item')
-        
-        # At least one contact method required
-        if not cleaned_data.get('phone_number') and not cleaned_data.get('email'):
-            raise forms.ValidationError('Please provide at least one contact method (phone or email)')
 
         return cleaned_data
 

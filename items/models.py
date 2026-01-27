@@ -22,6 +22,12 @@ class Item(models.Model):
         ('Other', 'Other'),
     )
 
+    CONTACT_PREFERENCE_CHOICES = (
+        ('email', 'Email'),
+        ('phone', 'Phone'),
+        ('chat', 'In-App Chat'),
+    )
+
     STATUS_CHOICES = (
         ('active', 'Active'),
         ('claimed', 'Claimed'),
@@ -69,6 +75,12 @@ class Item(models.Model):
         blank=True,
         help_text="Optional: e.g. '$20 reward' or 'Coffee on me!'"
     )
+    contact_preference = models.CharField(
+        max_length=20,
+        choices=CONTACT_PREFERENCE_CHOICES,
+        default='chat',
+        blank=True
+    )
 
     # Found-item-specific
     verification_question = models.TextField(
@@ -76,16 +88,11 @@ class Item(models.Model):
         help_text="Ask a question only the owner would know"
     )
 
-    # Contact fields (replaces chat system)
-    phone_number = models.CharField(
-        max_length=20,
-        blank=True,
-        help_text="Your phone/WhatsApp number (e.g. +2348012345678)"
-    )
-    email = models.EmailField(
+    # Combined contact field (replaces phone_number and email)
+    contact_info = models.CharField(
         max_length=200,
         blank=True,
-        help_text="Your email address"
+        help_text="Optional: your email or WhatsApp number (e.g. whatsapp:+2348012345678)"
     )
 
     # Status and claimer
@@ -107,11 +114,9 @@ class Item(models.Model):
         return f"{self.item_type.title()}: {self.title}"
 
     def get_whatsapp_link(self):
-        """Generate WhatsApp link from phone number"""
-        if self.phone_number:
-            # Remove spaces, dashes, and other non-numeric characters
-            clean_number = ''.join(filter(str.isdigit, self.phone_number))
-            # Add + if not present
+        """Generate WhatsApp link from contact_info if it starts with 'whatsapp:'"""
+        if self.contact_info and 'whatsapp:' in self.contact_info:
+            clean_number = self.contact_info.replace('whatsapp:', '').strip()
             if not clean_number.startswith('+'):
                 clean_number = '+' + clean_number
             return f"https://wa.me/{clean_number}"
@@ -134,7 +139,6 @@ class Review(models.Model):
 
     class Meta:
         ordering = ['-created_at']
-        # Ensure one review per user per item
         unique_together = ['item', 'reviewer']
 
     def __str__(self):
