@@ -69,12 +69,10 @@ def post_item(request):
                 messages.success(request, 'Item posted successfully!')
                 return redirect('items:item_detail', item_id=item.id)
             except Exception as e:
-                # Print the actual error
                 print(f"Error saving item: {str(e)}")
                 messages.error(request, f'Error posting item: {str(e)}')
                 return render(request, 'post_item.html', {'form': form})
         else:
-            # Print form errors
             print(f"Form errors: {form.errors}")
             messages.error(request, 'Please fix the errors below.')
     else:
@@ -97,12 +95,21 @@ def dashboard(request):
     returned_items = Item.objects.filter(poster=request.user, status='returned').count()
     active_chats = 0  # No chat system anymore
     
+    # Get items that need reviews (items claimed by user that are returned but not reviewed)
+    items_to_review = Item.objects.filter(
+        claimed_by=request.user,
+        status='returned'
+    ).exclude(
+        reviews__reviewer=request.user
+    )
+    
     context = {
         'my_items': my_items,
         'total_items': total_items,
         'returned_items': returned_items,
         'active_chats': active_chats,
         'current_filter': filter_type,
+        'items_to_review': items_to_review,  # NEW
     }
     
     return render(request, 'dashboard.html', context)
@@ -150,7 +157,7 @@ def mark_as_returned(request, item_id):
     if request.method == 'POST':
         item.status = 'returned'
         item.save()
-        messages.success(request, 'Item marked as returned!')
+        messages.success(request, 'Item marked as returned! The claimer will be prompted to leave a review.')
     
     return redirect('items:dashboard')
 
@@ -202,7 +209,7 @@ def add_review(request, item_id):
             review.item = item
             review.reviewer = request.user
             review.save()
-            messages.success(request, 'Review posted successfully!')
+            messages.success(request, 'Thank you for your review!')
             return redirect('items:item_detail', item_id=item.id)
     
     return redirect('items:item_detail', item_id=item.id)
